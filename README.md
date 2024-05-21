@@ -1,6 +1,6 @@
 # meetapp-backend
 MeetApp backend in django. This program is available at https://api.komornikantal.hu/
-
+\n
 Installation:
 clone this repo
 -git clone git@github.com:antal-komornik/meetapp-backend.git
