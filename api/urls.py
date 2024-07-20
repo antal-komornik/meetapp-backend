@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework import renderers
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import  UserViewSet, UserAdditionalInfoViewSet , EventViewSet, EventRegisterViewSet, WishlistViewSet
+from .views import search, search_by_category, UserViewSet, UserAdditionalInfoViewSet, EventViewSet, EventRegisterViewSet, WishlistViewSet
 
 
 router = DefaultRouter()
@@ -80,7 +80,8 @@ urlpatterns =([
     path('users/<int:pk>/', user_detail, name='user-detail'),
     # path('usersadditionalinfo/', useradditionalinfo_list, name='useradditional-list'),
     # path('usersadditionalinfo/<int:pk>/', useradditionalinfo_detail, name='useradditional-detail'),
-
+    path('search/', search, name='search'),
+    path('search_by_category/', search_by_category, name='search_by_category'),
     # # events, 
     path('events/', event_list, name='event-list'),
     path('events/<int:pk>/', event_detail, name='event-detail'),

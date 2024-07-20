@@ -4,6 +4,19 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.validators import MinValueValidator
 
+TYPE_CHOICES = [
+    ('BOARDGAME', 'Boardgame'),
+    ('COOKING', 'Cooking'),
+    ('EQUIPMENT_RENTAL', 'Equipment rental'),
+    ('OTHER', 'Other'),
+    ('SHOPPING', 'Shopping'),
+    ('SOCIAL_WORK', 'Social work'),
+    ('SPORT', 'Sport'),
+    ('TRAVELING', 'Traveling'),
+    ('TUDOR', 'Tudor'),
+    ('VIDEGAME', 'Videogame'),
+]
+
 class Event(models.Model):
     BOARDGAME = 'BOARDGAME'
     COOKING = 'COOKING'

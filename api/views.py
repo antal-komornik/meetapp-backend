@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import Event, EventRegister, UserAdditionalInfo, Wishlist
+from .models import Event, TYPE_CHOICES, EventRegister, UserAdditionalInfo, Wishlist
 from .serializers import EventSerializer, UserSerializer, EventRegisterSerializer, UserAdditionalInfoSerializer, WishlistSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth.models import User
@@ -14,12 +14,53 @@ from django.db import models
 from django.db.models import Q
 
 from django.shortcuts import render
+from django.db.models import Q
+
+
+def search(request):
+    query = request.GET.get('q', '')
+    if query:
+        results = Event.objects.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(location__icontains=query) |
+            Q(starting_time__icontains=query) |  # Keresés dátum és idő alapján
+            Q(date__icontains=query)  # Keresés dátum alapján
+            # |
+            # Q(type__icontains=query)             # Keresés típus alapján
+        )
+    else:
+        results = Event.objects.none()
+
+    results_list = list(results.values('id', 'title', 'description',
+                        'max_participants', 'starting_time', 'location', 'date'))
+    return JsonResponse(results_list, safe=False)
+
+
+def search_by_category(request):
+    category = request.GET.get('category', '')
+    types = [choice[0] for choice in TYPE_CHOICES]
+
+    if category:
+        if category in types:
+            results = Event.objects.filter(type=category)
+            if results.exists():
+                results_list = list(results.values(
+                    'id', 'title', 'description', 'max_participants', 'starting_time', 'location', 'date', 'type'))
+                return JsonResponse({'status': 'success', 'data': results_list}, safe=False)
+            else:
+                return JsonResponse({'status': 'no_data', 'message': f'No events found for category: {category}'}, safe=False)
+        else:
+            return JsonResponse({'status': 'invalid_category', 'message': 'Invalid category'}, safe=False)
+    else:
+        return JsonResponse({'status': 'no_category', 'message': 'No category specified'}, safe=False)
 
 
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
     #                       IsOwnerOrReadOnly]
 
